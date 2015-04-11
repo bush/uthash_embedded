@@ -7,6 +7,7 @@ struct my_struct {
   UT_hash_handle hh;         /* makes this structure hashable */
 };
 
+/* Users table */
 struct my_struct *users = NULL;
 
 typedef struct wra_uthash_table_st {
