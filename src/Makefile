@@ -7,15 +7,15 @@ LDIR =../lib
 
 LIBS=
 
-_DEPS = uthash-embedded.h
+_DEPS = uthash_embedded.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = example.o uthash-embedded.o 
+_OBJ = example.o uthash_embedded.o 
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
 $(ODIR)/%.o: %.c $(DEPS)
-		$(CC) -c -o $@ $< $(CFLAGS)
+		$(CC) -c -o $@ -Wall $< $(CFLAGS)
 
 
 example: $(OBJ)
