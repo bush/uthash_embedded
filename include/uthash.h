@@ -81,6 +81,12 @@ typedef unsigned char uint8_t;
 #ifndef uthash_malloc
 #define uthash_malloc(sz) malloc(sz)      /* malloc fcn                      */
 #endif
+#ifndef uthash_htbl_malloc
+#define uthash_htbl_malloc(add) ute_htbl_alloc(add)      /* malloc fcn       */
+#endif
+#ifndef uthash_bkts_malloc
+#define uthash_bkts_malloc(add) ute_bkts_alloc(add)      /* malloc fcn       */
+#endif
 #ifndef uthash_free
 #define uthash_free(ptr,sz) free(ptr)     /* free fcn                        */
 #endif
@@ -149,16 +155,14 @@ do {                                                                            
 
 #define HASH_MAKE_TABLE(hh,head)                                                 \
 do {                                                                             \
-  (head)->hh.tbl = (UT_hash_table*)uthash_malloc(                                \
-                  sizeof(UT_hash_table));                                        \
+  (head)->hh.tbl = (UT_hash_table*)uthash_htbl_alloc((void *)head)               \
   if (!((head)->hh.tbl))  { uthash_fatal( "out of memory"); }                    \
   memset((head)->hh.tbl, 0, sizeof(UT_hash_table));                              \
   (head)->hh.tbl->tail = &((head)->hh);                                          \
   (head)->hh.tbl->num_buckets = HASH_INITIAL_NUM_BUCKETS;                        \
   (head)->hh.tbl->log2_num_buckets = HASH_INITIAL_NUM_BUCKETS_LOG2;              \
   (head)->hh.tbl->hho = (char*)(&(head)->hh) - (char*)(head);                    \
-  (head)->hh.tbl->buckets = (UT_hash_bucket*)uthash_malloc(                      \
-          HASH_INITIAL_NUM_BUCKETS*sizeof(struct UT_hash_bucket));               \
+  (head)->hh.tbl->buckets = (UT_hash_bucket*)uthash_bkts_alloc((void *)head)     \
   if (! (head)->hh.tbl->buckets) { uthash_fatal( "out of memory"); }             \
   memset((head)->hh.tbl->buckets, 0,                                             \
           HASH_INITIAL_NUM_BUCKETS*sizeof(struct UT_hash_bucket));               \

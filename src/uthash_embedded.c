@@ -1,3 +1,5 @@
+/* utash retrofit helpers. */
+
 #include <stdio.h>
 #include "uthash_embedded.h"
 #include "uthash.h"
@@ -26,4 +28,28 @@ void *ute_init_nodes(char *container, uint32_t container_size, u_int32_t node_si
 
   printf("head: %p\n",head);
   return head;
+}
+
+void *ute_htbl_alloc(void *head_node)
+{
+  ute_node_t *node;
+  
+  if(head_node == NULL)
+    return NULL;
+  
+  node = (ute_node_t *)head_node;
+   
+  return (void *)&node->htbl->tbl;
+}
+
+void *ute_bkts_alloc(void *head_node)
+{
+  ute_node_t *node;
+  
+  if(head_node == NULL)
+    return NULL;
+  
+  node = (ute_node_t *)head_node;
+  
+  return (void *)&node->htbl->bkts;
 }

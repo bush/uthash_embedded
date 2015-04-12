@@ -12,10 +12,7 @@ struct my_struct node_pool[10];
 /* Users table */
 struct my_struct *users = NULL;
 
-typedef struct wra_uthash_table_st {
-  UT_hash_table table;
-  UT_hash_bucket buckets[HASH_INITIAL_NUM_BUCKETS];
-} wra_uthash_table_t;
+ute_htbl_t my_htbl;
 
 int main(int argc, char *argv[])
 {
@@ -42,6 +39,7 @@ int main(int argc, char *argv[])
 
 #if 0
   s = malloc(sizeof(struct my_struct));
+  s->node.htbl = &my_htbl;
   s->id = user_id;
   strcpy(s->name, name);
   HASH_ADD_INT( users, id, s );  /* id: name of key field */
