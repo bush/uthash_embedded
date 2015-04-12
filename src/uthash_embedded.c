@@ -4,10 +4,11 @@
 #include "utlist.h"
 
 
-ute_node_t *ute_init_nodes(ute_node_t *container, uint32_t container_size, u_int32_t node_size)
+void *ute_init_nodes(char *container, uint32_t container_size, u_int32_t node_size)
 {
   ute_node_t *head = NULL;
-  ute_node_t *node = container;
+  ute_node_t *node = (ute_node_t *)container;
+  char *ptr = container;
   u_int32_t remaining = container_size;
   
   /* Check for room */
@@ -16,11 +17,13 @@ ute_node_t *ute_init_nodes(ute_node_t *container, uint32_t container_size, u_int
   /* Setup the free list */
   while(remaining >= node_size)
   {
-    printf("Adding node\n");
+    printf("Adding node: %p\n",ptr);
     DL_APPEND(head,node);
     remaining -= node_size;
-    node += node_size;
+    ptr += node_size;
+    node = (ute_node_t *)ptr;
   }
 
-  return (ute_node_t *)head;
+  printf("head: %p\n",head);
+  return head;
 }
