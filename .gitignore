@@ -1,3 +1,7 @@
+# Custom
+src/example
+*.swp
+
 # Object files
 *.o
 *.ko

@@ -4,10 +4,10 @@
 #include "utlist.h"
 
 
-char *ute_init_nodes(const char *container, uint32_t container_size, u_int32_t node_size)
+ute_node_t *ute_init_nodes(ute_node_t *container, uint32_t container_size, u_int32_t node_size)
 {
-  node_t *head = NULL;
-  node_t *node = (node_t *)container;
+  ute_node_t *head = NULL;
+  ute_node_t *node = container;
   u_int32_t remaining = container_size;
   
   /* Check for room */
@@ -22,5 +22,5 @@ char *ute_init_nodes(const char *container, uint32_t container_size, u_int32_t n
     node += node_size;
   }
 
-  return (char *)head;
+  return (ute_node_t *)head;
 }
