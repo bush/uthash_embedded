@@ -88,7 +88,6 @@ typedef unsigned char uint8_t;
 #define uthash_bkts_malloc(add) ute_bkts_alloc(add)      /* malloc fcn       */
 #endif
 #ifndef uthash_free
-/*#define uthash_free(ptr,sz) free(ptr)*/     /* free fcn                    */
 #define uthash_free(ptr,sz) ute_htbl_free(ptr)
 #endif
 
