@@ -40,7 +40,6 @@ void ute_display_nodes(ute_node_t *head)
   return;
 }
 
-
 ute_node_t *ute_node_alloc(ute_node_t **head)
 {
   ute_node_t *node;
@@ -54,13 +53,19 @@ ute_node_t *ute_node_alloc(ute_node_t **head)
   return node;
 }
 
+void ute_node_free(ute_node_t **head, ute_node_t *node)
+{
+  DL_APPEND(*head,node);
+  return;
+}
+
 void *ute_htbl_alloc(void *head)
 {
   ute_node_t *node;
 
   if(head == NULL)
     return NULL;
-
+  printf("ute_htbl_alloc\n");
   node = (ute_node_t *)head;
 
   return (void *)&node->htbl->tbl;
