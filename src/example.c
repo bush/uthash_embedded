@@ -1,23 +1,27 @@
 #include <stdio.h>
 #include "uthash_embedded.h"
 
-struct my_struct {
+typedef struct my_node_s {
   ute_node_t node;
   int id;
   char name[10];
-};
+} my_node_t;
 
-struct my_struct node_pool[10];
+my_node_t node_pool[10];
 
 /* Users table */
-struct my_struct *users = NULL;
+my_node_t *users = NULL;
 
 ute_htbl_t my_htbl;
+
 
 int main(int argc, char *argv[])
 {
   int i;
-  struct my_struct *ptr = node_pool;
+  my_node_t *ptr = node_pool;
+  ute_node_t *head;
+  ute_node_t *alloc_node;
+
 #if 0
   struct my_struct *s = NULL;
   struct my_struct *find = NULL;
@@ -33,9 +37,14 @@ int main(int argc, char *argv[])
     printf("ptr: %p\n",ptr);
     ptr++;
   }
+  
+  printf("node_pool: %d, my_struct: %d\n",sizeof(node_pool),sizeof(my_node_t));
+  head = ute_init_nodes((char *)node_pool,sizeof(node_pool),sizeof(my_node_t));
 
-  printf("node_pool: %d, my_struct: %d\n",sizeof(node_pool),sizeof(struct my_struct));
-  ute_init_nodes((char *)node_pool,sizeof(node_pool),sizeof(struct my_struct));
+  ute_display_nodes(head);
+  alloc_node = ute_node_alloc(&head);
+  printf("alloc_node: %p\n",alloc_node);
+  ute_display_nodes(head);
 
 #if 0
   s = malloc(sizeof(struct my_struct));

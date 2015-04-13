@@ -6,13 +6,13 @@
 #include "utlist.h"
 
 
-void *ute_init_nodes(char *container, uint32_t container_size, u_int32_t node_size)
+ute_node_t *ute_init_nodes(char *container, uint32_t container_size, u_int32_t node_size)
 {
   ute_node_t *head = NULL;
   ute_node_t *node = (ute_node_t *)container;
   char *ptr = container;
   u_int32_t remaining = container_size;
-  
+
   /* Check for room */
   if(container_size < node_size) return NULL; 
 
@@ -30,26 +30,50 @@ void *ute_init_nodes(char *container, uint32_t container_size, u_int32_t node_si
   return head;
 }
 
-void *ute_htbl_alloc(void *head_node)
+void ute_display_nodes(ute_node_t *head)
 {
   ute_node_t *node;
-  
-  if(head_node == NULL)
+
+  printf("Nodes\n");
+  DL_FOREACH(head,node) printf("Node: %p\n",node); 
+
+  return;
+}
+
+
+ute_node_t *ute_node_alloc(ute_node_t **head)
+{
+  ute_node_t *node;
+
+  if(*head == NULL)
     return NULL;
-  
-  node = (ute_node_t *)head_node;
-   
+
+  node = (ute_node_t *)*head;
+  DL_DELETE(*head,node);
+
+  return node;
+}
+
+void *ute_htbl_alloc(void *head)
+{
+  ute_node_t *node;
+
+  if(head == NULL)
+    return NULL;
+
+  node = (ute_node_t *)head;
+
   return (void *)&node->htbl->tbl;
 }
 
-void *ute_bkts_alloc(void *head_node)
+void *ute_bkts_alloc(void *head)
 {
   ute_node_t *node;
-  
-  if(head_node == NULL)
+
+  if(head == NULL)
     return NULL;
-  
-  node = (ute_node_t *)head_node;
-  
+
+  node = (ute_node_t *)head;
+
   return (void *)&node->htbl->bkts;
 }
