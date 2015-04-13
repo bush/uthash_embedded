@@ -82,3 +82,8 @@ void *ute_bkts_alloc(void *head)
 
   return (void *)&node->htbl->bkts;
 }
+
+void ute_htbl_free(void *ptr)
+{
+  return;
+}
