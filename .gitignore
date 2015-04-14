@@ -1,5 +1,5 @@
 # Custom
-src/example
+src/example*
 *.swp
 
 # Object files
