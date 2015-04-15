@@ -30,12 +30,11 @@ typedef struct wra_subscription_table_st {
 } wra_subscription_table_t;
 
 int app_id = 1;
-wra_subscription_table_t subscription_table;
 
-void delete_all() {
+void delete_all(wra_subscription_table_t *tbl) {
   wra_subscription_t *current_user, *tmp;
-  HASH_ITER(hh, subscription_table.subscriptions, current_user, tmp) {
-    HASH_DEL(subscription_table.subscriptions,current_user);
+  HASH_ITER(hh, tbl->subscriptions, current_user, tmp) {
+    HASH_DEL(tbl->subscriptions,current_user);
     free(current_user);
   }
 }
@@ -50,17 +49,18 @@ void print_subscription_table(wra_subscription_table_t *tbl)
   }
 }
 
-wra_subscription_t *wra_subscribe_find(char *key)
+wra_subscription_t *wra_subscribe_find(wra_subscription_table_t *tbl, char *key)
 {
   wra_subscription_t *subscription;
 
   printf("looking for |%s|\n",key);
-  HASH_FIND_STR(subscription_table.subscriptions,key,subscription);
+  HASH_FIND_STR(tbl->subscriptions,key,subscription);
   if (subscription) return subscription;
   return NULL;
 }
 
-void wra_subscribe(wra_subscription_table_t *tbl, char *type, char *subscription_key, char *app_key) {
+wra_subscription_table_t *wra_subscribe(wra_subscription_table_t *tbl,
+                   char *type, char *subscription_key, char *app_key) {
   wra_subscription_t *subscription;
   wra_applist_t *applist;
   char key[100];
@@ -130,33 +130,39 @@ void wra_subscribe(wra_subscription_table_t *tbl, char *type, char *subscription
   else
     printf("App %s already subscribed for %s:%s\n",app_key,type,subscription_key);
 
+  return subscription;
+
 }
 
 int main(int argc, char *argv[])
 {
   wra_applist_t *applist, *tmp;
-  wra_subscription_t *subscription, *tmp1;
+  wra_subscription_t *subscription, *tmp1, *add;
+  wra_subscription_table_t stable;
 
   /* Initialize */
-  subscription_table.subscriptions = NULL;
-  subscription_table.applist = NULL;
+  stable.subscriptions = NULL;
+  stable.applist = NULL;
 
-  wra_subscribe("tm","temp","app1");
-  wra_subscribe("tm","temp","app2");
-  wra_subscribe("tm","temp","app3"); 
-  wra_subscribe("tm","temp","app4"); 
-  wra_subscribe("tm","pressure","app1"); 
-  wra_subscribe("file","temp","app1");
-  wra_subscribe("file","temp","app5");
-  wra_subscribe("file","foobar.txt","app1");
+  add = wra_subscribe(&stable,"tm","temp","app1");
+  /* Add custom cookies here */
+
+
+  wra_subscribe(&stable,"tm","temp","app2");
+  wra_subscribe(&stable,"tm","temp","app3"); 
+  wra_subscribe(&stable,"tm","temp","app4"); 
+  wra_subscribe(&stable,"tm","pressure","app1"); 
+  wra_subscribe(&stable,"file","temp","app1");
+  wra_subscribe(&stable,"file","temp","app5");
+  wra_subscribe(&stable,"file","foobar.txt","app1");
 
   printf("Subscriptions:\n");
-  HASH_ITER(hh,subscription_table.subscriptions,subscription,tmp1) {
+  HASH_ITER(hh,stable.subscriptions,subscription,tmp1) {
     printf("key :: '%s'\n", subscription->key);
   }
 
   printf("Apps:\n");
-  HASH_ITER(hh,subscription_table.applist,applist,tmp) {
+  HASH_ITER(hh,stable.applist,applist,tmp) {
     printf("Subscription :: '%s' '%s:%s'\n",applist->key, applist->type, applist->subscription_key);
     LL_FOREACH(applist->head,subscription)
       printf("\tApp :: '%s'\n",subscription->app_key);
