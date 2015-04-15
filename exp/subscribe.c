@@ -40,11 +40,11 @@ void delete_all() {
   }
 }
 
-void print_subscription_table()
+void print_subscription_table(wra_subscription_table_t *tbl)
 {
   wra_subscription_t *subscription;
 
-  for(subscription=subscription_table.subscriptions; subscription != NULL;
+  for(subscription=tbl->subscriptions; subscription != NULL;
       subscription=(wra_subscription_t*)(subscription->hh.next)) {
     printf("key: %s\n",subscription->key);
   }
@@ -60,7 +60,7 @@ wra_subscription_t *wra_subscribe_find(char *key)
   return NULL;
 }
 
-void wra_subscribe(char *type, char *subscription_key, char *app_key) {
+void wra_subscribe(wra_subscription_table_t *tbl, char *type, char *subscription_key, char *app_key) {
   wra_subscription_t *subscription;
   wra_applist_t *applist;
   char key[100];
@@ -74,7 +74,7 @@ void wra_subscribe(char *type, char *subscription_key, char *app_key) {
   strncat(key,type,sizeof(key));
 
   /* Check for an existing subscritpiotn */
-  HASH_FIND_STR(subscription_table.subscriptions,key,subscription);
+  HASH_FIND_STR(tbl->subscriptions,key,subscription);
 
   /* No existing subscription so create one */
   if(subscription == NULL)
@@ -92,7 +92,7 @@ void wra_subscribe(char *type, char *subscription_key, char *app_key) {
     memset(subscription->key,'\0',sizeof(subscription->key));
     strncpy(subscription->key,key,sizeof(subscription->key));
     strncpy(subscription->app_key,app_key,sizeof(subscription->app_key));
-    HASH_ADD_STR(subscription_table.subscriptions,key,subscription);
+    HASH_ADD_STR(tbl->subscriptions,key,subscription);
 
     /* Create the type-subscription key */
     memset(applist_key,'\0',sizeof(applist_key));
@@ -101,7 +101,7 @@ void wra_subscribe(char *type, char *subscription_key, char *app_key) {
     strncat(applist_key,subscription_key,sizeof(applist_key));
 
     /* Now find the applist node */
-    HASH_FIND_STR(subscription_table.applist,applist_key,applist);
+    HASH_FIND_STR(tbl->applist,applist_key,applist);
 
     /* No applist for this subscription key so create a node and add it */
     if(applist == NULL)
@@ -120,7 +120,7 @@ void wra_subscribe(char *type, char *subscription_key, char *app_key) {
       memset(applist->type,'\0',sizeof(applist->type));
       strncpy(applist->type,type,sizeof(applist->type));
 
-      HASH_ADD_STR(subscription_table.applist,key,applist);
+      HASH_ADD_STR(tbl->applist,key,applist);
     }
 
     /* Add it to the list */
